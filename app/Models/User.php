@@ -3,14 +3,16 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Models\Traits\CanUseUuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, CanUseUuid, HasApiTokens;
 
     /**
      * The attributes that are mass assignable.
@@ -18,7 +20,9 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        'name',
+        'first_name',
+        'last_name',
+        'user_type',
         'email',
         'password',
     ];
@@ -32,6 +36,12 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
+
+    const TOKEN_EXPIRES_IN = 10;
+
+    const BUSINESS = 'business';
+    const CUSTOMER = 'customer';
+
 
     /**
      * Get the attributes that should be cast.
